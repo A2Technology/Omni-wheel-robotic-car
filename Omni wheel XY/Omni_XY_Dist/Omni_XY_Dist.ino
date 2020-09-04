@@ -54,9 +54,6 @@ void loop()
     Serial.print("Encoder 3: ");
     Serial.println(newPosition_3);
 
-
-
-//
 //    reset_encoder;
 //    Plot(0, 0.5, 0);
 //    reset_encoder;
