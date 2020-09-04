@@ -141,7 +141,6 @@ void Plot(float x, float y, float w)
 
     //Mapping value
     M_in_min = 0;
-    //M_in_max = 19;
     M_in_max = max(max(u1, u2), u3);
     M_out_min = 0;
     M_out_max = 255;
