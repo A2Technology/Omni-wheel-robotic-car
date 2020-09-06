@@ -3,7 +3,7 @@ Encoder Encoder_1(2, 3);
 Encoder Encoder_2(18, 19);
 Encoder Encoder_3(20, 21);
 
-long oldPosition_1=0;
+long oldPosition_1=0; 
 long newPosition_1;
 long oldPosition_2=0;
 long newPosition_2;
