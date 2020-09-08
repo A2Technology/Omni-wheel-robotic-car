@@ -4,12 +4,13 @@
 #define IN2B 25
 #define IN1C 26
 #define IN2C 27
-#define EN1 11
-#define EN2 12
-#define EN3 13
+#define PWM1 11
+#define PWM2 12
+#define PWM3 13
 void w1(int rotation, int direct);
 void w2(int rotation, int direct);
 void w3(int rotation, int direct);
+int sign_of(float x);
 
 int error = 0;
 byte type = 0;
@@ -21,6 +22,8 @@ float M_in_min, M_in_max, M_out_min, M_out_max;
 
 int speedcar = 0;
 char command;
+const float r = 0.175;
+const float l = 0.053;
 
 void setup()
 {
@@ -98,46 +101,17 @@ void loop()
     }
 
     //Define Omni wheel robot parameter
-    /*
-float r=0.175;
-float l=0.053;
-*/
     //motor value
-    float u1 = (175 * w - 1000 * x) / 53;
-    float u2 = (175 * w + 500 * x - 500 * sqrt(3) * y) / 53;
-    float u3 = (175 * w + 500 * x + 500 * sqrt(3) * y) / 53;
+    float u1 = (l * w - x) / r;
+    float u2 = (2 * l * w + x - sqrt(3) * y) / 2 * r;
+    float u3 = (2 * l * w + x + sqrt(3) * y) / 2 * r;
 
-    /*
- float u1 = (l * w - x) / r;
- float u2 = (2*l * w + x - sqrt(3) * y) / 2*r;
- float u3 = (2*l * w + x + sqrt(3) * y) / 2*r;
-*/
+    //Get sign of rotating velocity of wheels
+    u1_sign = sign_of(u1);
+    u2_sign = sign_of(u2);
+    u3_sign = sign_of(u3);
 
-    if (u1 >= 0)
-    {
-        u1_sign = 1;
-    }
-    else
-    {
-        u1_sign = -1;
-    }
-    if (u2 >= 0)
-    {
-        u2_sign = 1;
-    }
-    else
-    {
-        u2_sign = -1;
-    }
-    if (u3 >= 0)
-    {
-        u3_sign = 1;
-    }
-    else
-    {
-        u3_sign = -1;
-    }
-
+    //Because control signal is positive number, we take abs of u1 u2 u3
     u1 = abs(u1);
     u2 = abs(u2);
     u3 = abs(u3);
@@ -157,8 +131,7 @@ float l=0.053;
     w1(u1, u1_sign);
     w2(u2, u2_sign);
     w3(u3, u3_sign);
-    
-    
+
     Serial.print("u1: ");
     Serial.print(u1);
     Serial.print("  u1-sign: ");
@@ -177,13 +150,6 @@ float l=0.053;
     Serial.print(u3_sign);
     Serial.println("");
     Serial.println("**********");
-    
-    
-    
-    
-
-
-    
 }
 
 void w1(int rotation, int direct)
@@ -229,4 +195,12 @@ void w3(int rotation, int direct)
         digitalWrite(IN1C, LOW);
         digitalWrite(IN2C, HIGH);
     }
+}
+
+int sign_of(float x)
+{
+    if (x >= 0)
+        return 1;
+    else
+        return -1;
 }

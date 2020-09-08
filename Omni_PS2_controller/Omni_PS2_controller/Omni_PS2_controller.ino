@@ -1,4 +1,5 @@
 #include <PS2X_lib.h> //for v1.6
+#include <Encoder.h>
 #define IN1A 22
 #define IN2A 23
 #define IN1B 24
@@ -8,6 +9,12 @@
 #define PWM1 11
 #define PWM2 12
 #define PWM3 13
+#define EN_1A 2
+#define EN_1B 3
+#define EN_2A 18
+#define EN_2B 19
+#define EN_3A 20
+#define EN_3B 21
 /******************************************************************
  * set pins connected to PS2 controller:
  *   - 1e column: original 
@@ -29,9 +36,14 @@
 #define pressures false
 //#define rumble      true
 #define rumble false
+
+Encoder Encoder_1(EN_1A, EN_1B);
+Encoder Encoder_2(EN_2A, EN_2B);
+Encoder Encoder_3(EN_3A, EN_3B);
 void w1(int rotation, int direct);
 void w2(int rotation, int direct);
 void w3(int rotation, int direct);
+void Plot(float x, float y, float w);
 int sign_of(float x);
 
 PS2X ps2x; // create PS2 Controller Class
