@@ -5,9 +5,9 @@
 #define IN2B 25
 #define IN1C 26
 #define IN2C 27
-#define EN1 11
-#define EN2 12
-#define EN3 13
+#define PWM1 11
+#define PWM2 12
+#define PWM3 13
 /******************************************************************
  * set pins connected to PS2 controller:
  *   - 1e column: original 
@@ -29,6 +29,10 @@
 #define pressures false
 //#define rumble      true
 #define rumble false
+void w1(int rotation, int direct);
+void w2(int rotation, int direct);
+void w3(int rotation, int direct);
+int sign_of(float x);
 
 PS2X ps2x; // create PS2 Controller Class
 
@@ -47,50 +51,8 @@ float M_in_min, M_in_max, M_out_min, M_out_max;
 int speedcar = 0;
 char command;
 
-void w1(int rotation, int direct)
-{
-    analogWrite(EN1, rotation);
-    if (direct == 1)
-    {
-        digitalWrite(IN1A, HIGH);
-        digitalWrite(IN2A, LOW);
-    }
-    else if (direct == -1)
-    {
-        digitalWrite(IN1A, LOW);
-        digitalWrite(IN2A, HIGH);
-    }
-}
-
-void w2(int rotation, int direct)
-{
-    analogWrite(EN2, rotation);
-    if (direct == 1)
-    {
-        digitalWrite(IN1B, HIGH);
-        digitalWrite(IN2B, LOW);
-    }
-    else if (direct == -1)
-    {
-        digitalWrite(IN1B, LOW);
-        digitalWrite(IN2B, HIGH);
-    }
-}
-
-void w3(int rotation, int direct)
-{
-    analogWrite(EN3, rotation);
-    if (direct == 1)
-    {
-        digitalWrite(IN1C, HIGH);
-        digitalWrite(IN2C, LOW);
-    }
-    else if (direct == -1)
-    {
-        digitalWrite(IN1C, LOW);
-        digitalWrite(IN2C, HIGH);
-    }
-}
+const float r = 0.175;
+const float l = 0.053;
 
 void setup()
 {
@@ -101,6 +63,9 @@ void setup()
     pinMode(IN2B, OUTPUT);
     pinMode(IN1C, OUTPUT);
     pinMode(IN2C, OUTPUT);
+    pinMode(PWM1, OUTPUT);
+    pinMode(PWM2, OUTPUT);
+    pinMode(PWM3, OUTPUT);
 
     Serial.begin(57600);
     delay(300); //added delay to give wireless ps2 module some time to startup, before configuring it
@@ -163,20 +128,27 @@ void loop()
         return;
 
     else
-    {                                      //DualShock Controller
+    {
+        //DualShock Controller
         ps2x.read_gamepad(false, vibrate); //read controller and set large motor to spin at 'vibrate' speed
-
-        y = ps2x.Analog(PSS_LY); // read the x and Y value of the left joy stick
+        y = ps2x.Analog(PSS_LY);           // read the x and Y value of the left joy stick
         x = 255 - ps2x.Analog(PSS_LX);
 
-        //re map value
+        //remap value
         in_min = 0;
         in_max = 255;
         out_min = -1;
         out_max = 1;
 
+        //remapping joy stick's value
         y = (y - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
         x = (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+
+        //Deadzone
+        if (x <= 0.15 && x >= -0.15)
+            x = 0;
+        if (y <= 0.15 && y >= -0.15)
+            y = 0;
 
         // rotating
         if (ps2x.Button(PSB_L1))
@@ -196,61 +168,98 @@ void loop()
             w = 0;
         }
     }
-    //motor value
-    float u1 = (175 * w - 1000 * x) / 53;
-    float u2 = (175 * w + 500 * x - 500 * sqrt(3) * y) / 53;
-    float u3 = (175 * w + 500 * x + 500 * sqrt(3) * y) / 53;
 
+    //Define Omni wheel robot parameter
+    //motor value
+    float u1 = (l * w - x) / r;
+    float u2 = (2 * l * w + x - sqrt(3) * y) / 2 * r;
+    float u3 = (2 * l * w + x + sqrt(3) * y) / 2 * r;
+
+    //Get sign of rotating velocity of wheels
+    u1_sign = sign_of(u1);
+    u2_sign = sign_of(u2);
+    u3_sign = sign_of(u3);
+
+    //Because control signal is positive number, we take abs of u1 u2 u3
+    u1 = abs(u1);
+    u2 = abs(u2);
+    u3 = abs(u3);
+
+    //Mapping value
     M_in_min = 0;
-    M_in_max = 18.9;
-    M_out_min = 0u;
+    //M_in_max = 19;
+    M_in_max = max(max(u1, u2), u3);
+    M_out_min = 0;
     M_out_max = 255;
 
-    if (u1 >= 0)
-    {
-        u1_sign = 1;
-    }
-    else
-    {
-        u1_sign = -1;
-    }
-    if (u2 >= 0)
-    {
-        u2_sign = 1;
-    }
-    else
-    {
-        u2_sign = -1;
-    }
-    if (u3 >= 0)
-    {
-        u3_sign = 1;
-    }
-    else
-    {
-        u3_sign = -1;
-    }
+    //Remapping motors' value
+    u1 = (u1 - M_in_min) * (M_out_max - M_out_min) / (M_in_max - in_min) + M_out_min;
+    u2 = (u2 - M_in_min) * (M_out_max - M_out_min) / (M_in_max - in_min) + M_out_min;
+    u3 = (u3 - M_in_min) * (M_out_max - M_out_min) / (M_in_max - in_min) + M_out_min;
 
-    u1 = (abs(u1) - M_in_min) * (M_out_max - M_out_min) / (M_in_max - in_min) + M_out_min;
-    u2 = (abs(u2) - M_in_min) * (M_out_max - M_out_min) / (M_in_max - in_min) + M_out_min;
-    u3 = (abs(u3) - M_in_min) * (M_out_max - M_out_min) / (M_in_max - in_min) + M_out_min;
-
+    //Control motors
     w1(u1, -u1_sign);
     w2(u2, u2_sign);
     w3(u3, u3_sign);
 
-    Serial.print("Motor Values:");
+    Serial.print("Motor Values:\n");
     Serial.print(u1);
     Serial.print(",\n");
     Serial.print(u2);
     Serial.print(",\n");
     Serial.print(u3);
     Serial.print(",\n");
-    Serial.print("Motor Direction:");
-    Serial.print(u1_sign);
-    Serial.print(",");
-    Serial.print(u2_sign);
-    Serial.print(",");
-    Serial.print(u3_sign);
-    Serial.print(",");
+}
+
+void w1(int rotation, int direct)
+{
+    analogWrite(PWM1, rotation);
+    if (direct == 1)
+    {
+        digitalWrite(IN1A, HIGH);
+        digitalWrite(IN2A, LOW);
+    }
+    else if (direct == -1)
+    {
+        digitalWrite(IN1A, LOW);
+        digitalWrite(IN2A, HIGH);
+    }
+}
+
+void w2(int rotation, int direct)
+{
+    analogWrite(PWM2, rotation);
+    if (direct == 1)
+    {
+        digitalWrite(IN1B, HIGH);
+        digitalWrite(IN2B, LOW);
+    }
+    else if (direct == -1)
+    {
+        digitalWrite(IN1B, LOW);
+        digitalWrite(IN2B, HIGH);
+    }
+}
+
+void w3(int rotation, int direct)
+{
+    analogWrite(PWM3, rotation);
+    if (direct == 1)
+    {
+        digitalWrite(IN1C, HIGH);
+        digitalWrite(IN2C, LOW);
+    }
+    else if (direct == -1)
+    {
+        digitalWrite(IN1C, LOW);
+        digitalWrite(IN2C, HIGH);
+    }
+}
+
+int sign_of(float x)
+{
+    if (x >= 0)
+        return 1;
+    else
+        return -1;
 }
