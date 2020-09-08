@@ -170,9 +170,6 @@ void loop()
     }
 
     //Define Omni wheel robot parameter
-    /*
-
-*/
     //motor value
     float u1 = (l * w - x) / r;
     float u2 = (2 * l * w + x - sqrt(3) * y) / 2 * r;
