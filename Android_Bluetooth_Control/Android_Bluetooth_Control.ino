@@ -22,6 +22,7 @@ void Plot(float x, float y, float w);
 void w1(int rotation, int direct);
 void w2(int rotation, int direct);
 void w3(int rotation, int direct);
+int sign_of(float x);
 
 double x, y, w;
 int u1_sign, u2_sign, u3_sign;
@@ -66,137 +67,135 @@ void setup()
     w1(0, 1);
     w2(0, 1);
     w3(0, 1);
-    
 }
 void loop()
 {
-//    w1(255, 1);
-//    w2(255, 1);
-//    w3(255, 1);
-//    delay(200);
-//    w1(0, 1);
-//    w2(0, 1);
-//    w3(0, 1);
-//    delay(5000);
-//    w1(255, -1);
-//    w2(255, -1);
-//    w3(255, -1);
-//    delay(200);
-//    w1(0, 1);
-//    w2(0, 1);
-//    w3(0, 1);
-//    delay(5000);
-        command = Serial.read();
-        Serial.println(command);
-        //initialize with motors stoped
-      
-        // Serial.println(command);
-        switch (command)
-        {
-        case 'F': //Forward
-            w1(0, 1);
-            w2(255 * speedcar, -1);
-            w3(255 * speedcar, 1);
-            break;
+    //    w1(255, 1);
+    //    w2(255, 1);
+    //    w3(255, 1);
+    //    delay(200);
+    //    w1(0, 1);
+    //    w2(0, 1);
+    //    w3(0, 1);
+    //    delay(5000);
+    //    w1(255, -1);
+    //    w2(255, -1);
+    //    w3(255, -1);
+    //    delay(200);
+    //    w1(0, 1);
+    //    w2(0, 1);
+    //    w3(0, 1);
+    //    delay(5000);
+    command = Serial.read();
+    Serial.println(command);
+    //initialize with motors stoped
 
-        case 'B': //Backward
-            w1(0, +1);
-            w2(255 * speedcar, 1);
-            w3(255 * speedcar, -1);
-            break;
+    // Serial.println(command);
+    switch (command)
+    {
+    case 'F': //Forward
+        w1(0, 1);
+        w2(255 * speedcar, -1);
+        w3(255 * speedcar, 1);
+        break;
 
-        case 'R': //Right
-            w1(255 * speedcar, -1);
-            w2(180 * speedcar, +1);
-            w3(180 * speedcar, +1);
-            break;
+    case 'B': //Backward
+        w1(0, +1);
+        w2(255 * speedcar, 1);
+        w3(255 * speedcar, -1);
+        break;
 
-        case 'L': //Left
-            w1(255 * speedcar, +1);
-            w2(180 * speedcar, -1);
-            w3(180 * speedcar, -1);
-            break;
+    case 'R': //Right
+        w1(255 * speedcar, -1);
+        w2(180 * speedcar, +1);
+        w3(180 * speedcar, +1);
+        break;
 
-        case 'G': //Forward left
-            w1(186 * speedcar, +1);
-            w2(255 * speedcar, -1);
-            w3(68 * speedcar, +1);
-            break;
+    case 'L': //Left
+        w1(255 * speedcar, +1);
+        w2(180 * speedcar, -1);
+        w3(180 * speedcar, -1);
+        break;
 
-        case 'I': //Forward right
-            w1(186 * speedcar, -1);
-            w2(255 * speedcar, -1);
-            w3(68 * speedcar, +1);
-            break;
+    case 'G': //Forward left
+        w1(186 * speedcar, +1);
+        w2(255 * speedcar, -1);
+        w3(68 * speedcar, +1);
+        break;
 
-        case 'H': //Backward left
-            w1(186 * speedcar, +1);
-            w2(68 * speedcar, +1);
-            w3(255 * speedcar, -1);
-            break;
+    case 'I': //Forward right
+        w1(186 * speedcar, -1);
+        w2(255 * speedcar, -1);
+        w3(68 * speedcar, +1);
+        break;
 
-        case 'J': //Backward right
-            w1(186 * speedcar, -1);
-            w2(255 * speedcar, +1);
-            w3(68 * speedcar, -1);
-            break;
+    case 'H': //Backward left
+        w1(186 * speedcar, +1);
+        w2(68 * speedcar, +1);
+        w3(255 * speedcar, -1);
+        break;
 
-        case 'S': //No motor input
-            w1(0, +1);
-            w2(0, +1);
-            w3(0, -1);
-            break;
+    case 'J': //Backward right
+        w1(186 * speedcar, -1);
+        w2(255 * speedcar, +1);
+        w3(68 * speedcar, -1);
+        break;
 
-        case 'W': //Rotate left
-            w1(255 * speedcar, +1);
-            w2(255 * speedcar, +1);
-            w3(255 * speedcar, +1);
-            delay(200);
-            break;
+    case 'S': //No motor input
+        w1(0, +1);
+        w2(0, +1);
+        w3(0, -1);
+        break;
 
-        case 'w': //Rotate left
-            w1(255 * speedcar, +1);
-            w2(255 * speedcar, +1);
-            w3(255 * speedcar, +1);
-            delay(200);
-            break;
+    case 'W': //Rotate left
+        w1(255 * speedcar, +1);
+        w2(255 * speedcar, +1);
+        w3(255 * speedcar, +1);
+        delay(200);
+        break;
 
-        case 'U': //Rotate right
-            w1(255 * speedcar, -1);
-            w2(255 * speedcar, -1);
-            w3(255 * speedcar, -1);
-            delay(200);
-            break;
+    case 'w': //Rotate left
+        w1(255 * speedcar, +1);
+        w2(255 * speedcar, +1);
+        w3(255 * speedcar, +1);
+        delay(200);
+        break;
 
-        case 'u': //Rotate right
-            w1(255 * speedcar, -1);
-            w2(255 * speedcar, -1);
-            w3(255 * speedcar, -1);
-            delay(200);
-            break;
-        case 'X':
-            //Go square
-            
-                Plot(1, 0, 0);
-                delay(100);
-                Plot(0, 1, 0);
-                delay(100);
-                Plot(-1, 0, 0);
-                delay(100);
-                Plot(0, -1, 0);
-                delay(100);
-                break;
-            
-        case 'D':
-            
-            w1(0, 1);
-            w2(0, 1);
-            w3(0, 1);
-            break;
-            
-        default: break;
-        }
-    
+    case 'U': //Rotate right
+        w1(255 * speedcar, -1);
+        w2(255 * speedcar, -1);
+        w3(255 * speedcar, -1);
+        delay(200);
+        break;
+
+    case 'u': //Rotate right
+        w1(255 * speedcar, -1);
+        w2(255 * speedcar, -1);
+        w3(255 * speedcar, -1);
+        delay(200);
+        break;
+    case 'X':
+        //Go square
+        Plot(1, 0, 0);
+        delay(100);
+        Plot(0, 1, 0);
+        delay(100);
+        Plot(-1, 0, 0);
+        delay(100);
+        Plot(0, -1, 0);
+        delay(100);
+        break;
+
+    case 'D':
+
+        w1(0, 1);
+        w2(0, 1);
+        w3(0, 1);
+        break;
+
+    default:
+        break;
+    }
 }
 
 void w1(int rotation, int direct)
@@ -259,20 +258,12 @@ void Plot(float x, float y, float w)
     float u2 = (175 * w + 500 * x - 500 * sqrt(3) * y) / 53;
     float u3 = (175 * w + 500 * x + 500 * sqrt(3) * y) / 53;
 
-    //Get the sign to control motor
-    if (u1 >= 0)
-        u1_sign = 1;
-    else
-        u1_sign = -1;
-    if (u2 >= 0)
-        u2_sign = 1;
-    else
-        u2_sign = -1;
-    if (u3 >= 0)
-        u3_sign = 1;
-    else
-        u3_sign = -1;
-
+    //Get sign of rotating velocity of wheels
+    u1_sign = sign_of(u1);
+    u2_sign = sign_of(u2);
+    u3_sign = sign_of(u3);
+    
+    //Because control signal is positive number, we take abs of u1 u2 u3
     u1 = abs(u1);
     u2 = abs(u2);
     u3 = abs(u3);
@@ -348,4 +339,12 @@ void Plot(float x, float y, float w)
     Serial.println(newPosition_2);
     Serial.print("Encoder 3: ");
     Serial.println(newPosition_3);
+}
+
+int sign_of(float x)
+{
+    if (x >= 0)
+        return 1;
+    else
+        return -1;
 }
