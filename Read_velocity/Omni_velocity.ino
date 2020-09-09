@@ -15,6 +15,9 @@
 #define EN_2B 19
 #define EN_3A 20
 #define EN_3B 21
+
+#define ENCODEROUTPUT 30000
+
 Encoder Encoder_1(EN_1A, EN_1B);
 Encoder Encoder_2(EN_2A, EN_2B);
 Encoder Encoder_3(EN_3A, EN_3B);
@@ -23,6 +26,8 @@ void w1(int rotation, int direct);
 void w2(int rotation, int direct);
 void w3(int rotation, int direct);
 int sign_of(float x);
+float vel(int select);
+void control(float u, int select);
 
 double x, y, w;
 int u1_sign, u2_sign, u3_sign;
@@ -37,6 +42,18 @@ long oldPosition_2 = 0;
 long newPosition_2;
 long oldPosition_3 = 0;
 long newPosition_3;
+
+long interval = 1000;
+long previousMillis = 0;
+long currentMillis = 0;
+long rpm = 0;
+
+long CurrentEncoder;
+long previousEncoder;
+
+boolean measureRpm = false;
+int motorPwm = 0;
+volatile long encoderValue = 0;
 
 void setup()
 {
@@ -70,132 +87,7 @@ void setup()
 }
 void loop()
 {
-    //    w1(255, 1);
-    //    w2(255, 1);
-    //    w3(255, 1);
-    //    delay(200);
-    //    w1(0, 1);
-    //    w2(0, 1);
-    //    w3(0, 1);
-    //    delay(5000);
-    //    w1(255, -1);
-    //    w2(255, -1);
-    //    w3(255, -1);
-    //    delay(200);
-    //    w1(0, 1);
-    //    w2(0, 1);
-    //    w3(0, 1);
-    //    delay(5000);
-    command = Serial.read();
-    Serial.println(command);
-    //initialize with motors stoped
-
-    // Serial.println(command);
-    switch (command)
-    {
-    case 'F': //Forward
-        w1(0, 1);
-        w2(255 * speedcar, -1);
-        w3(255 * speedcar, 1);
-        break;
-
-    case 'B': //Backward
-        w1(0, +1);
-        w2(255 * speedcar, 1);
-        w3(255 * speedcar, -1);
-        break;
-
-    case 'R': //Right
-        w1(255 * speedcar, -1);
-        w2(180 * speedcar, +1);
-        w3(180 * speedcar, +1);
-        break;
-
-    case 'L': //Left
-        w1(255 * speedcar, +1);
-        w2(180 * speedcar, -1);
-        w3(180 * speedcar, -1);
-        break;
-
-    case 'G': //Forward left
-        w1(186 * speedcar, +1);
-        w2(255 * speedcar, -1);
-        w3(68 * speedcar, +1);
-        break;
-
-    case 'I': //Forward right
-        w1(186 * speedcar, -1);
-        w2(255 * speedcar, -1);
-        w3(68 * speedcar, +1);
-        break;
-
-    case 'H': //Backward left
-        w1(186 * speedcar, +1);
-        w2(68 * speedcar, +1);
-        w3(255 * speedcar, -1);
-        break;
-
-    case 'J': //Backward right
-        w1(186 * speedcar, -1);
-        w2(255 * speedcar, +1);
-        w3(68 * speedcar, -1);
-        break;
-
-    case 'S': //No motor input
-        w1(0, +1);
-        w2(0, +1);
-        w3(0, -1);
-        break;
-
-    case 'W': //Rotate left
-        w1(255 * speedcar, +1);
-        w2(255 * speedcar, +1);
-        w3(255 * speedcar, +1);
-        delay(200);
-        break;
-
-    case 'w': //Rotate left
-        w1(255 * speedcar, +1);
-        w2(255 * speedcar, +1);
-        w3(255 * speedcar, +1);
-        delay(200);
-        break;
-
-    case 'U': //Rotate right
-        w1(255 * speedcar, -1);
-        w2(255 * speedcar, -1);
-        w3(255 * speedcar, -1);
-        delay(200);
-        break;
-
-    case 'u': //Rotate right
-        w1(255 * speedcar, -1);
-        w2(255 * speedcar, -1);
-        w3(255 * speedcar, -1);
-        delay(200);
-        break;
-    case 'X':
-        //Go square
-        Plot(1, 0, 0);
-        delay(100);
-        Plot(0, 1, 0);
-        delay(100);
-        Plot(-1, 0, 0);
-        delay(100);
-        Plot(0, -1, 0);
-        delay(100);
-        break;
-
-    case 'D':
-
-        w1(0, 1);
-        w2(0, 1);
-        w3(0, 1);
-        break;
-
-    default:
-        break;
-    }
+    control(5, 3);
 }
 
 void w1(int rotation, int direct)
@@ -347,4 +239,82 @@ int sign_of(float x)
         return 1;
     else
         return -1;
+}
+
+float vel(int select) 
+{
+    //read velocity of selected motor
+    //return velocity in rad/s
+    switch (select)
+    {
+    case 1:
+        CurrentEncoder = Encoder_1.read();
+        break;
+    case 2:
+        CurrentEncoder = Encoder_2.read();
+        break;
+    case 3:
+        CurrentEncoder = Encoder_3.read();
+        break;
+    }
+
+    currentMillis = millis();
+    if (currentMillis - previousMillis > interval)
+    {
+        previousMillis = currentMillis;
+
+        rpm = (float)abs(((CurrentEncoder - previousEncoder) * 2 * PI / ENCODEROUTPUT));
+        Serial.println(rpm);
+        previousEncoder = CurrentEncoder;
+
+        return rpm;
+    }
+}
+
+void control(float u, int select)
+{
+    //control motor speed using ON-OFF control
+    float k = 0.1; //Range of accepted value [u(1-k),u(1+k)]
+    float v = 0;   //velocity read
+
+    switch (select) //Select motor
+    {
+    case 1:
+        v = vel(1);
+        break;
+    case 2:
+        v = vel(2);
+        break;
+    case 3:
+        v = vel(3);
+        break;
+    }
+
+    if (v > u + u * k) //upper threshold
+        switch (select)
+        {
+        case 1:
+            w1(128, sign_of(u));
+            break;
+        case 2:
+            w2(128, sign_of(u));
+            break;
+        case 3:
+            w3(128, sign_of(u));
+            break;
+        }
+
+    else if (v < u - u * k) //lower threshold
+        switch (select)
+        {
+        case 1:
+            w1(255, sign_of(u));
+            break;
+        case 2:
+            w2(255, sign_of(u));
+            break;
+        case 3:
+            w3(255, sign_of(u));
+            break;
+        }
 }
