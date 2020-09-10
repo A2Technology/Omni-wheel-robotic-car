@@ -26,7 +26,7 @@ void w2(int rotation, int direct);
 void w3(int rotation, int direct);
 int sign_of(float x);
 void control_PID(float u, int select);
-float vel(int select);
+float read_speed(int select);
 
 double x, y, w;
 int u1_sign, u2_sign, u3_sign;
@@ -45,7 +45,7 @@ long newPosition_3;
 long interval = 1000;
 long previousMillis = 0;
 long currentMillis = 0;
-long rpm = 0;
+
 
 long CurrentEncoder;
 long previousEncoder;
@@ -177,21 +177,21 @@ void control_PID(float u, int select)
     {
     case 1:
         setpoint_1 = u;
-        input_1 = vel(1);
+        input_1 = read_speed(1);
         PID_1.Compute();
         w1(output_1, u_sign);
         break;
 
     case 2:
         setpoint_2 = u;
-        input_2 = vel(2);
+        input_2 = read_speed(2);
         PID_2.Compute();
         w2(output_2, u_sign);
         break;
 
     case 3:
         setpoint_3 = u;
-        input_3 = vel(3);
+        input_3 = read_speed(3);
         PID_3.Compute();
         w3(output_3, u_sign);
         break;
@@ -244,7 +244,7 @@ void w3(int rotation, int direct)
         digitalWrite(IN2C, HIGH);
     }
 }
-float vel(int select)
+float read_speed(int select)
 {
     //read velocity of selected motor
     //return velocity in rad/s
@@ -261,15 +261,16 @@ float vel(int select)
         break;
     }
 
+    float rot_speed;
     currentMillis = millis();
     if (currentMillis - previousMillis > interval)
     {
         previousMillis = currentMillis;
 
-        rpm = (float)abs(((CurrentEncoder - previousEncoder) * 2 * PI / ENCODEROUTPUT));
-        Serial.println(rpm);
+        rot_speed = (float)abs(((CurrentEncoder - previousEncoder) * 2 * PI / ENCODEROUTPUT));
+        
         previousEncoder = CurrentEncoder;
 
-        return rpm;
+        return rot_speed;
     }
 }
