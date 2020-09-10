@@ -26,8 +26,8 @@ void w1(int rotation, int direct);
 void w2(int rotation, int direct);
 void w3(int rotation, int direct);
 int sign_of(float x);
-float vel(int select);
-void control(float u, int select);
+float read_speed(int select);
+void control_ONOFF(float u, int select);
 
 double x, y, w;
 int u1_sign, u2_sign, u3_sign;
@@ -46,9 +46,8 @@ long newPosition_3;
 long interval = 1000;
 long previousMillis = 0;
 long currentMillis = 0;
-long rpm = 0;
 
-long CurrentEncoder;
+long urrentEncoder;
 long previousEncoder;
 
 boolean measureRpm = false;
@@ -241,37 +240,35 @@ int sign_of(float x)
         return -1;
 }
 
-float vel(int select) 
+float read_speed(int select)
 {
     //read velocity of selected motor
     //return velocity in rad/s
     switch (select)
     {
     case 1:
-        CurrentEncoder = Encoder_1.read();
+        urrentEncoder = Encoder_1.read();
         break;
     case 2:
-        CurrentEncoder = Encoder_2.read();
+        urrentEncoder = Encoder_2.read();
         break;
     case 3:
-        CurrentEncoder = Encoder_3.read();
+        urrentEncoder = Encoder_3.read();
         break;
     }
 
+    float rot_speed;
     currentMillis = millis();
     if (currentMillis - previousMillis > interval)
     {
         previousMillis = currentMillis;
-
-        rpm = (float)abs(((CurrentEncoder - previousEncoder) * 2 * PI / ENCODEROUTPUT));
-        Serial.println(rpm);
-        previousEncoder = CurrentEncoder;
-
-        return rpm;
+        rot_speed = (float)abs(((urrentEncoder - previousEncoder) * 2 * PI / ENCODEROUTPUT));
+        previousEncoder = urrentEncoder;
+        return rot_speed;
     }
 }
 
-void control(float u, int select)
+void control_ONOFF(float u, int select)
 {
     //control motor speed using ON-OFF control
     float k = 0.1; //Range of accepted value [u(1-k),u(1+k)]
@@ -280,13 +277,13 @@ void control(float u, int select)
     switch (select) //Select motor
     {
     case 1:
-        v = vel(1);
+        v = read_speed(1);
         break;
     case 2:
-        v = vel(2);
+        v = read_speed(2);
         break;
     case 3:
-        v = vel(3);
+        v = read_speed(3);
         break;
     }
 

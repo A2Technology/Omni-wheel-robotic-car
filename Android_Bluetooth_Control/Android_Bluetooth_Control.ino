@@ -333,12 +333,12 @@ void Plot(float x, float y, float w)
     Encoder_2.write(0);
     Encoder_3.write(0);
 
-    Serial.print("Encoder 1: ");
-    Serial.println(newPosition_1);
-    Serial.print("Encoder 2: ");
-    Serial.println(newPosition_2);
-    Serial.print("Encoder 3: ");
-    Serial.println(newPosition_3);
+//    Serial.print("Encoder 1: ");
+//    Serial.println(newPosition_1);
+//    Serial.print("Encoder 2: ");
+//    Serial.println(newPosition_2);
+//    Serial.print("Encoder 3: ");
+//    Serial.println(newPosition_3);
 }
 
 int sign_of(float x)
