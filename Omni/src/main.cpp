@@ -3,31 +3,43 @@
 #include <Encoder.h>
 #include "Omni.h"
 
-#define IN1A 22
-#define IN2A 23
-#define IN1B 24
-#define IN2B 25
-#define IN1C 26
-#define IN2C 27
-#define PWM1 11
-#define PWM2 12
-#define PWM3 13
-#define EN_1A 2
-#define EN_1B 3
-#define EN_2A 18
-#define EN_2B 19
-#define EN_3A 20
-#define EN_3B 21
-
-Encoder Encoder_1(EN_1A, EN_1B);
-Encoder Encoder_2(EN_2A, EN_2B);
-Encoder Encoder_3(EN_3A, EN_3B);
 
 
-void setup() {
-  // put your setup code here, to run once:
+void setup()
+{
+	// put your setup code here, to run once:
+	Serial.begin(9600); //Set the band rate to your Bluetooth module.
+	pinMode(IN1A, OUTPUT);
+	pinMode(IN2A, OUTPUT);
+	pinMode(IN1B, OUTPUT);
+	pinMode(IN2B, OUTPUT);
+	pinMode(IN1C, OUTPUT);
+	pinMode(IN2C, OUTPUT);
+	pinMode(PWM1, OUTPUT);
+	pinMode(PWM2, OUTPUT);
+	pinMode(PWM3, OUTPUT);
+	
+
+	//initial check motor on start up
+	w1(255, 1);
+	w2(255, 1);
+	w3(255, 1);
+	delay(200);
+	w1(0, 1);
+	w2(0, 1);
+	w3(0, 1);
+	delay(1000);
+	w1(255, -1);
+	w2(255, -1);
+	w3(255, -1);
+	delay(200);
+	w1(0, 1);
+	w2(0, 1);
+	w3(0, 1);
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
+void loop()
+{
+	// put your main code here, to run repeatedly:
+	control_PID(3,1);
 }
