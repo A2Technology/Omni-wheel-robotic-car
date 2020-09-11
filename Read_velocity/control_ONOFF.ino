@@ -47,7 +47,7 @@ long interval = 1000;
 long previousMillis = 0;
 long currentMillis = 0;
 
-long urrentEncoder;
+long currentEncoder;
 long previousEncoder;
 
 boolean measureRpm = false;
@@ -244,16 +244,17 @@ float read_speed(int select)
 {
     //read velocity of selected motor
     //return velocity in rad/s
+    const int Encoder_1_round = 30 000; //define number of pulses in one round of encoder
     switch (select)
     {
     case 1:
-        urrentEncoder = Encoder_1.read();
+        currentEncoder = Encoder_1.read();
         break;
     case 2:
-        urrentEncoder = Encoder_2.read();
+        currentEncoder = Encoder_2.read();
         break;
     case 3:
-        urrentEncoder = Encoder_3.read();
+        currentEncoder = Encoder_3.read();
         break;
     }
 
@@ -262,8 +263,8 @@ float read_speed(int select)
     if (currentMillis - previousMillis > interval)
     {
         previousMillis = currentMillis;
-        rot_speed = (float)abs(((urrentEncoder - previousEncoder) * 2 * PI / ENCODEROUTPUT));
-        previousEncoder = urrentEncoder;
+        rot_speed = (float)abs(((currentEncoder - previousEncoder) * 2 * PI / Encoder_1_round));
+        previousEncoder = currentEncoder;
         return rot_speed;
     }
 }

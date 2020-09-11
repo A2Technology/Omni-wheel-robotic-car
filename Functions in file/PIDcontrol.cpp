@@ -59,14 +59,10 @@ void setup()
     PID_3.SetOutputLimits(0, 255);
 }
 
-
-
-
 void control_PID(float u, int select)
 {
     //Get sign of rotating velocity of wheels
     int u_sign = sign_of(u);
-
     switch (select)
     {
     case 1:
@@ -91,8 +87,3 @@ void control_PID(float u, int select)
         break;
     }
 }
-
-
-
-
-
