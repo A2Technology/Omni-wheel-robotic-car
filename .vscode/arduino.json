@@ -1,0 +1,8 @@
+{
+    "sketch": "MainSketch.ino",
+    "output": "../build",
+    "port": "COM9",
+    "board": "arduino:avr:uno",
+    "debugger": "jlink",
+    "programmer": "ArduinoISP"
+}
