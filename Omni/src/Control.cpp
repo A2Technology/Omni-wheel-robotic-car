@@ -126,7 +126,6 @@ float read_speed(int select)
         currentEncoder = -Encoder_3.read();
         break;
     }
-
     float rot_speed;
     const int interval = 1000; //choose interval is 1 second (1000 milliseconds)
     currentMillis = millis();
@@ -137,7 +136,6 @@ float read_speed(int select)
         previousEncoder = currentEncoder;
         return rot_speed;
     }
-    
 }
 
 void Plot(float x, float y, float w)
@@ -177,7 +175,6 @@ void Plot(float x, float y, float w)
     float p_u1 = (175 * w - 1000 * x) / 53;
     float p_u2 = (175 * w + 500 * x - 500 * sqrt(3) * y) / 53;
     float p_u3 = (175 * w + 500 * x + 500 * sqrt(3) * y) / 53;
-
     do
     {
 
