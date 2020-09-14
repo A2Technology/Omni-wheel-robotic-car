@@ -4,7 +4,7 @@
 #include "Omni.h"
 
 char command;
-int speedcar = 1;
+float speedcar = 0.5;
 void setup()
 {
 	// put your setup code here, to run once:
@@ -19,17 +19,17 @@ void setup()
 	pinMode(PWM2, OUTPUT);
 	pinMode(PWM3, OUTPUT);
 	//initial check motor on start up
-	w1(255, 1);
-	w2(255, 1);
-	w3(255, 1);
+	w1(255*speedcar, 1);
+	w2(255*speedcar, 1);
+	w3(255*speedcar, 1);
 	delay(200);
 	w1(0, 1);
 	w2(0, 1);
 	w3(0, 1);
-	delay(1000);
-	w1(255, -1);
-	w2(255, -1);
-	w3(255, -1);
+	delay(2000);
+	w1(255*speedcar, -1);
+	w2(255*speedcar, -1);
+	w3(255*speedcar, -1);
 	delay(200);
 	w1(0, 1);
 	w2(0, 1);
@@ -41,7 +41,6 @@ void loop()
 	// put your main code here, to run repeatedly:
 	command = Serial.read();
 	Serial.println(command);
-	//initialize with motors stoped
 
 	// Serial.println(command);
 	switch (command)
