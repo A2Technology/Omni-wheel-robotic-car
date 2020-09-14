@@ -31,5 +31,6 @@ int sign_of(float x);
 float read_speed(int select);
 void control_ONOFF(float u, int select);
 void control_PID(float u, int select);
+long encoder_output(int select);
 
 #endif

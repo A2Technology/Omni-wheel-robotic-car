@@ -2,7 +2,7 @@
 #include <PID_v1.h>
 #include <Encoder.h>
 #include "Omni.h"
-double kp = 20, ki = 10, kd = 0.01, input_1 = 0, output_1 = 0, setpoint_1 = 0, input_2 = 0, output_2 = 0, setpoint_2 = 0, input_3 = 0, output_3 = 0, setpoint_3 = 0;
+double kp = 50, ki = 20, kd = 5, input_1 = 0, output_1 = 0, setpoint_1 = 0, input_2 = 0, output_2 = 0, setpoint_2 = 0, input_3 = 0, output_3 = 0, setpoint_3 = 0;
 PID PID_1(&input_1, &output_1, &setpoint_1, kp, ki, kd, DIRECT);
 PID PID_2(&input_2, &output_2, &setpoint_2, kp, ki, kd, DIRECT);
 PID PID_3(&input_3, &output_3, &setpoint_3, kp, ki, kd, DIRECT);
@@ -117,13 +117,13 @@ float read_speed(int select)
     switch (select)
     {
     case 1:
-        currentEncoder = Encoder_1.read();
+        currentEncoder = -Encoder_1.read();
         break;
     case 2:
-        currentEncoder = Encoder_2.read();
+        currentEncoder = -Encoder_2.read();
         break;
     case 3:
-        currentEncoder = Encoder_3.read();
+        currentEncoder = -Encoder_3.read();
         break;
     }
 
@@ -137,8 +137,7 @@ float read_speed(int select)
         previousEncoder = currentEncoder;
         return rot_speed;
     }
-    else
-        return 0;
+    
 }
 
 void Plot(float x, float y, float w)
@@ -240,4 +239,22 @@ void Plot(float x, float y, float w)
     // Serial.println(newPosition_2);
     // Serial.print("Encoder 3: ");
     // Serial.println(newPosition_3);
+}
+
+long encoder_output(int select)
+{
+    switch (select)
+    {
+    case 1:
+        return -Encoder_1.read();
+        break;
+    case 2:
+        return -Encoder_2.read();
+        break;
+    case 3:
+        return -Encoder_3.read();
+        break;
+    default:
+        return 0;
+    }
 }

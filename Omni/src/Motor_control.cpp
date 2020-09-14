@@ -3,7 +3,6 @@
 #include <Encoder.h>
 #include "Omni.h"
 
-
 void w1(int rotation, int direct)
 {
     analogWrite(PWM1, rotation);
