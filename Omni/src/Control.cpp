@@ -142,7 +142,6 @@ float read_speed(int select)
         return 0;
 }
 
-
 void Plot(float x, float y, float w)
 {
     const float r = 0.175;
