@@ -12,14 +12,14 @@ Encoder Encoder_3(EN_3A, EN_3B);
 long previousMillis = 0;
 long currentMillis = 0;
 
-long currentEncoder;
-long previousEncoder;
-long oldPosition_1 = 0;
-long oldPosition_2 = 0;
-long oldPosition_3 = 0;
-long newPosition_1;
-long newPosition_2;
-long newPosition_3;
+volatile long currentEncoder;
+volatile long previousEncoder;
+volatile long oldPosition_1 = 0;
+volatile long oldPosition_2 = 0;
+volatile long oldPosition_3 = 0;
+volatile long newPosition_1;
+volatile long newPosition_2;
+volatile long newPosition_3;
 
 void control_PID(float u, int select)
 {
@@ -60,7 +60,6 @@ void control_PID(float u, int select)
         break;
     }
 }
-
 
 void control_ONOFF(float u, int select)
 {
@@ -205,24 +204,24 @@ void Plot(float x, float y, float w)
         if (newPosition_1 != oldPosition_1)
         {
             oldPosition_1 = newPosition_1;
-            Serial.print("Encoder 1: ");
-            Serial.println(newPosition_1);
+            // Serial.print("Encoder 1: ");
+            // Serial.println(newPosition_1);
         }
         //
         //
         if (newPosition_2 != oldPosition_2)
         {
             oldPosition_2 = newPosition_2;
-            Serial.print("Encoder 2: ");
-            Serial.println(newPosition_2);
+            // Serial.print("Encoder 2: ");
+            // Serial.println(newPosition_2);
         }
         //
         //
         if (newPosition_3 != oldPosition_3)
         {
             oldPosition_3 = newPosition_3;
-            Serial.print("Encoder 3: ");
-            Serial.println(newPosition_3);
+            // Serial.print("Encoder 3: ");
+            // Serial.println(newPosition_3);
         }
 
         if (!(newPosition_1 < abs(scale * p_u1 * 30000 / (2 * PI)) + StError || newPosition_2 < abs(scale * p_u2 * 30000 / (2 * PI)) + StError || newPosition_3 < abs(scale * p_u3 * 30000 / (2 * PI)) + StError))
@@ -235,10 +234,10 @@ void Plot(float x, float y, float w)
     Encoder_2.write(0);
     Encoder_3.write(0);
 
-    Serial.print("Encoder 1: ");
-    Serial.println(newPosition_1);
-    Serial.print("Encoder 2: ");
-    Serial.println(newPosition_2);
-    Serial.print("Encoder 3: ");
-    Serial.println(newPosition_3);
+    // Serial.print("Encoder 1: ");
+    // Serial.println(newPosition_1);
+    // Serial.print("Encoder 2: ");
+    // Serial.println(newPosition_2);
+    // Serial.print("Encoder 3: ");
+    // Serial.println(newPosition_3);
 }
