@@ -45,26 +45,8 @@ void setup()
 
 void loop()
 {
-	// control_PID(3, 1);
-	// control_PID(3, 2);
-	// control_PID(3, 3);
-	// if (read_speed(1) != 0)
-	// {
-	// 	Serial.print("1  ");
-	// 	Serial.println(read_speed(1));
-	// }
-	// if (read_speed(2) != 0)
-	// {
-	// 	Serial.print("2  ");
-	// 	Serial.println(read_speed(2));
-	// }
-	// if (read_speed(3) != 0)
-	// {
-	// 	Serial.print("3  ");
-	// 	Serial.println(read_speed(3));
-	// }
 
-	// put your main code here, to run repeatedly:
+	//// put your main code here, to run repeatedly:
 	command = Serial.read();
 	Serial.println(command);
 
@@ -105,6 +87,7 @@ void loop()
 	case 'q':
 		speedcar = 1;
 		break;
+
 	//Control motion
 	case 'F': //Forward
 		control_PID(0, 1);
@@ -120,7 +103,7 @@ void loop()
 
 	case 'R': //Right
 		control_PID(-4 * speedcar, 1);
-		control_PID(2* speedcar, 2);
+		control_PID(2 * speedcar, 2);
 		control_PID(2 * speedcar, 3);
 		break;
 
@@ -133,7 +116,7 @@ void loop()
 	case 'G': //Forward left
 		control_PID(2 * speedcar, 1);
 		control_PID(-4 * speedcar, 2);
-		control_PID(1* speedcar, 3);
+		control_PID(1 * speedcar, 3);
 		break;
 
 	case 'I': //Forward right
@@ -154,8 +137,6 @@ void loop()
 		control_PID(-1 * speedcar, 3);
 		break;
 
-	
-
 	case 'W': //Rotate left
 		control_PID(4 * speedcar, 1);
 		control_PID(4 * speedcar, 2);
@@ -166,7 +147,7 @@ void loop()
 	case 'w': //Rotate left
 		control_PID(4 * speedcar, 1);
 		control_PID(4 * speedcar, 2);
-		control_PID(4* speedcar, 3);
+		control_PID(4 * speedcar, 3);
 		delay(200);
 		break;
 
@@ -178,7 +159,7 @@ void loop()
 		break;
 
 	case 'u': //Rotate right
-		control_PID(-4* speedcar, 1);
+		control_PID(-4 * speedcar, 1);
 		control_PID(-4 * speedcar, 2);
 		control_PID(-4 * speedcar, 3);
 		delay(200);
@@ -193,108 +174,107 @@ void loop()
 		w2(0, 1);
 		w3(0, 1);
 		break;
-	
-	// case 'F': //Forward
-	// 	w1(0, 1);
-	// 	w2(255 * speedcar, -1);
-	// 	w3(255 * speedcar, 1);
-	// 	break;
 
-	// case 'B': //Backward
-	// 	w1(0, +1);
-	// 	w2(255 * speedcar, 1);
-	// 	w3(255 * speedcar, -1);
-	// 	break;
-
-	// case 'R': //Right
-	// 	w1(255 * speedcar, -1);
-	// 	w2(180 * speedcar, +1);
-	// 	w3(180 * speedcar, +1);
-	// 	break;
-
-	// case 'L': //Left
-	// 	w1(255 * speedcar, +1);
-	// 	w2(180 * speedcar, -1);
-	// 	w3(180 * speedcar, -1);
-	// 	break;
-
-	// case 'G': //Forward left
-	// 	w1(186 * speedcar, +1);
-	// 	w2(255 * speedcar, -1);
-	// 	w3(68 * speedcar, +1);
-	// 	break;
-
-	// case 'I': //Forward right
-	// 	w1(186 * speedcar, -1);
-	// 	w2(255 * speedcar, -1);
-	// 	w3(68 * speedcar, +1);
-	// 	break;
-
-	// case 'H': //Backward left
-	// 	w1(186 * speedcar, +1);
-	// 	w2(68 * speedcar, +1);
-	// 	w3(255 * speedcar, -1);
-	// 	break;
-
-	// case 'J': //Backward right
-	// 	w1(186 * speedcar, -1);
-	// 	w2(255 * speedcar, +1);
-	// 	w3(68 * speedcar, -1);
-	// 	break;
-
-	// case 'S': //No motor input
-	// 	w1(0, +1);
-	// 	w2(0, +1);
-	// 	w3(0, -1);
-	// 	break;
-
-	// case 'W': //Rotate left
-	// 	w1(255 * speedcar, +1);
-	// 	w2(255 * speedcar, +1);
-	// 	w3(255 * speedcar, +1);
-	// 	delay(200);
-	// 	break;
-
-	// case 'w': //Rotate left
-	// 	w1(255 * speedcar, +1);
-	// 	w2(255 * speedcar, +1);
-	// 	w3(255 * speedcar, +1);
-	// 	delay(200);
-	// 	break;
-
-	// case 'U': //Rotate right
-	// 	w1(255 * speedcar, -1);
-	// 	w2(255 * speedcar, -1);
-	// 	w3(255 * speedcar, -1);
-	// 	delay(200);
-	// 	break;
-
-	// case 'u': //Rotate right
-	// 	w1(255 * speedcar, -1);
-	// 	w2(255 * speedcar, -1);
-	// 	w3(255 * speedcar, -1);
-	// 	delay(200);
-	// 	break;
-
-	// case 'X':
-	// 	//Go square
-	// 	position(1, 0, 0);
-	// 	delay(100);
-	// 	position(0, 1, 0);
-	// 	delay(100);
-	// 	position(-1, 0, 0);
-	// 	delay(100);
-	// 	position(0, -1, 0);
-	// 	delay(100);
-	// 	break;
-
-	// case 'D':
-	// 	w1(0, 1);
-	// 	w2(0, 1);
-	// 	w3(0, 1);
-	// 	break;
+	case 'X': //Go square
+		position(1, 0, 0);
+		delay(100);
+		position(0, 1, 0);
+		delay(100);
+		position(-1, 0, 0);
+		delay(100);
+		position(0, -1, 0);
+		delay(100);
+		break;
 
 	default:
 		break;
 	}
 }
+
+// case 'F': //Forward
+// 	w1(0, 1);
+// 	w2(255 * speedcar, -1);
+// 	w3(255 * speedcar, 1);
+// 	break;
+
+// case 'B': //Backward
+// 	w1(0, +1);
+// 	w2(255 * speedcar, 1);
+// 	w3(255 * speedcar, -1);
+// 	break;
+
+// case 'R': //Right
+// 	w1(255 * speedcar, -1);
+// 	w2(180 * speedcar, +1);
+// 	w3(180 * speedcar, +1);
+// 	break;
+
+// case 'L': //Left
+// 	w1(255 * speedcar, +1);
+// 	w2(180 * speedcar, -1);
+// 	w3(180 * speedcar, -1);
+// 	break;
+
+// case 'G': //Forward left
+// 	w1(186 * speedcar, +1);
+// 	w2(255 * speedcar, -1);
+// 	w3(68 * speedcar, +1);
+// 	break;
+
+// case 'I': //Forward right
+// 	w1(186 * speedcar, -1);
+// 	w2(255 * speedcar, -1);
+// 	w3(68 * speedcar, +1);
+// 	break;
+
+// case 'H': //Backward left
+// 	w1(186 * speedcar, +1);
+// 	w2(68 * speedcar, +1);
+// 	w3(255 * speedcar, -1);
+// 	break;
+
+// case 'J': //Backward right
+// 	w1(186 * speedcar, -1);
+// 	w2(255 * speedcar, +1);
+// 	w3(68 * speedcar, -1);
+// 	break;
+
+// case 'S': //No motor input
+// 	w1(0, +1);
+// 	w2(0, +1);
+// 	w3(0, -1);
+// 	break;
+
+// case 'W': //Rotate left
+// 	w1(255 * speedcar, +1);
+// 	w2(255 * speedcar, +1);
+// 	w3(255 * speedcar, +1);
+// 	delay(200);
+// 	break;
+
+// case 'w': //Rotate left
+// 	w1(255 * speedcar, +1);
+// 	w2(255 * speedcar, +1);
+// 	w3(255 * speedcar, +1);
+// 	delay(200);
+// 	break;
+
+// case 'U': //Rotate right
+// 	w1(255 * speedcar, -1);
+// 	w2(255 * speedcar, -1);
+// 	w3(255 * speedcar, -1);
+// 	delay(200);
+// 	break;
+
+// case 'u': //Rotate right
+// 	w1(255 * speedcar, -1);
+// 	w2(255 * speedcar, -1);
+// 	w3(255 * speedcar, -1);
+// 	delay(200);
+// 	break;
+
+// case 'D':
+// 	w1(0, 1);
+// 	w2(0, 1);
+// 	w3(0, 1);
+// 	break;

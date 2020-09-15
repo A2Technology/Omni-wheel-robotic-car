@@ -20,7 +20,6 @@ volatile long oldPosition_3 = 0;
 volatile long newPosition_1;
 volatile long newPosition_2;
 volatile long newPosition_3;
- 
 
 void control_PID(float u, int select)
 {
@@ -37,7 +36,7 @@ void control_PID(float u, int select)
     PID_3.SetOutputLimits(0, 255);
     //Get sign of rotating velocity of wheels
     int u_sign = sign_of(u);
-    u=abs(u);
+    u = abs(u);
     switch (select)
     {
     case 1:
@@ -201,24 +200,18 @@ void position(float x, float y, float w)
         if (newPosition_1 != oldPosition_1)
         {
             oldPosition_1 = newPosition_1;
-            // Serial.print("Encoder 1: ");
-            // Serial.println(newPosition_1);
         }
         //
         //
         if (newPosition_2 != oldPosition_2)
         {
             oldPosition_2 = newPosition_2;
-            // Serial.print("Encoder 2: ");
-            // Serial.println(newPosition_2);
         }
         //
         //
         if (newPosition_3 != oldPosition_3)
         {
             oldPosition_3 = newPosition_3;
-            // Serial.print("Encoder 3: ");
-            // Serial.println(newPosition_3);
         }
 
         if (!(newPosition_1 < abs(scale * p_u1 * 30000 / (2 * PI)) + StError || newPosition_2 < abs(scale * p_u2 * 30000 / (2 * PI)) + StError || newPosition_3 < abs(scale * p_u3 * 30000 / (2 * PI)) + StError))
@@ -230,13 +223,6 @@ void position(float x, float y, float w)
     Encoder_1.write(0);
     Encoder_2.write(0);
     Encoder_3.write(0);
-
-    // Serial.print("Encoder 1: ");
-    // Serial.println(newPosition_1);
-    // Serial.print("Encoder 2: ");
-    // Serial.println(newPosition_2);
-    // Serial.print("Encoder 3: ");
-    // Serial.println(newPosition_3);
 }
 
 long encoder_output(int select)
