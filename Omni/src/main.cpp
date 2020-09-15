@@ -45,7 +45,6 @@ void setup()
 
 void loop()
 {
-
 	//// put your main code here, to run repeatedly:
 	command = Serial.read();
 	Serial.println(command);

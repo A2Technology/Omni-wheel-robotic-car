@@ -81,7 +81,7 @@ void control_ONOFF(float u, int select)
         break;
     }
 
-    if (v > u + u * k) //upper threshold
+    if (v > u * (1 + k)) //upper threshold
         switch (select)
         {
         case 1:
@@ -95,7 +95,7 @@ void control_ONOFF(float u, int select)
             break;
         }
 
-    else if (v < u - u * k) //lower threshold
+    else if (v < u * (1 - k)) //lower threshold
         switch (select)
         {
         case 1:
