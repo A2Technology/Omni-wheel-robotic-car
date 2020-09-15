@@ -20,6 +20,7 @@ volatile long oldPosition_3 = 0;
 volatile long newPosition_1;
 volatile long newPosition_2;
 volatile long newPosition_3;
+ 
 
 void control_PID(float u, int select)
 {
@@ -36,6 +37,7 @@ void control_PID(float u, int select)
     PID_3.SetOutputLimits(0, 255);
     //Get sign of rotating velocity of wheels
     int u_sign = sign_of(u);
+    u=abs(u);
     switch (select)
     {
     case 1:
@@ -138,7 +140,7 @@ float read_speed(int select)
     }
 }
 
-void Plot(float x, float y, float w)
+void position(float x, float y, float w)
 {
     const float r = 0.175;
     const float l = 0.053;
@@ -177,7 +179,6 @@ void Plot(float x, float y, float w)
     float p_u3 = (175 * w + 500 * x + 500 * sqrt(3) * y) / 53;
     do
     {
-
         newPosition_1 = abs(Encoder_1.read());
         newPosition_2 = abs(Encoder_2.read());
         newPosition_3 = abs(Encoder_3.read());
