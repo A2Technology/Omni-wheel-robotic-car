@@ -2,7 +2,7 @@
 #include <PID_v1.h>
 #include <Encoder.h>
 #include "Omni.h"
-double kp = 20, ki = 10, kd = 0.01, input_1 = 0, output_1 = 0, setpoint_1 = 0, input_2 = 0, output_2 = 0, setpoint_2 = 0, input_3 = 0, output_3 = 0, setpoint_3 = 0;
+double kp = 50, ki = 20, kd = 5, input_1 = 0, output_1 = 0, setpoint_1 = 0, input_2 = 0, output_2 = 0, setpoint_2 = 0, input_3 = 0, output_3 = 0, setpoint_3 = 0;
 PID PID_1(&input_1, &output_1, &setpoint_1, kp, ki, kd, DIRECT);
 PID PID_2(&input_2, &output_2, &setpoint_2, kp, ki, kd, DIRECT);
 PID PID_3(&input_3, &output_3, &setpoint_3, kp, ki, kd, DIRECT);
@@ -12,14 +12,15 @@ Encoder Encoder_3(EN_3A, EN_3B);
 long previousMillis = 0;
 long currentMillis = 0;
 
-long currentEncoder;
-long previousEncoder;
-long oldPosition_1 = 0;
-long oldPosition_2 = 0;
-long oldPosition_3 = 0;
-long newPosition_1;
-long newPosition_2;
-long newPosition_3;
+volatile long currentEncoder;
+volatile long previousEncoder;
+volatile long oldPosition_1 = 0;
+volatile long oldPosition_2 = 0;
+volatile long oldPosition_3 = 0;
+volatile long newPosition_1;
+volatile long newPosition_2;
+volatile long newPosition_3;
+ 
 
 void control_PID(float u, int select)
 {
@@ -36,6 +37,7 @@ void control_PID(float u, int select)
     PID_3.SetOutputLimits(0, 255);
     //Get sign of rotating velocity of wheels
     int u_sign = sign_of(u);
+    u=abs(u);
     switch (select)
     {
     case 1:
@@ -117,16 +119,15 @@ float read_speed(int select)
     switch (select)
     {
     case 1:
-        currentEncoder = Encoder_1.read();
+        currentEncoder = -Encoder_1.read();
         break;
     case 2:
-        currentEncoder = Encoder_2.read();
+        currentEncoder = -Encoder_2.read();
         break;
     case 3:
-        currentEncoder = Encoder_3.read();
+        currentEncoder = -Encoder_3.read();
         break;
     }
-
     float rot_speed;
     const int interval = 1000; //choose interval is 1 second (1000 milliseconds)
     currentMillis = millis();
@@ -137,12 +138,9 @@ float read_speed(int select)
         previousEncoder = currentEncoder;
         return rot_speed;
     }
-    else
-        return 0;
 }
 
-
-void Plot(float x, float y, float w)
+void position(float x, float y, float w)
 {
     const float r = 0.175;
     const float l = 0.053;
@@ -179,10 +177,8 @@ void Plot(float x, float y, float w)
     float p_u1 = (175 * w - 1000 * x) / 53;
     float p_u2 = (175 * w + 500 * x - 500 * sqrt(3) * y) / 53;
     float p_u3 = (175 * w + 500 * x + 500 * sqrt(3) * y) / 53;
-
     do
     {
-
         newPosition_1 = abs(Encoder_1.read());
         newPosition_2 = abs(Encoder_2.read());
         newPosition_3 = abs(Encoder_3.read());
@@ -205,24 +201,24 @@ void Plot(float x, float y, float w)
         if (newPosition_1 != oldPosition_1)
         {
             oldPosition_1 = newPosition_1;
-            Serial.print("Encoder 1: ");
-            Serial.println(newPosition_1);
+            // Serial.print("Encoder 1: ");
+            // Serial.println(newPosition_1);
         }
         //
         //
         if (newPosition_2 != oldPosition_2)
         {
             oldPosition_2 = newPosition_2;
-            Serial.print("Encoder 2: ");
-            Serial.println(newPosition_2);
+            // Serial.print("Encoder 2: ");
+            // Serial.println(newPosition_2);
         }
         //
         //
         if (newPosition_3 != oldPosition_3)
         {
             oldPosition_3 = newPosition_3;
-            Serial.print("Encoder 3: ");
-            Serial.println(newPosition_3);
+            // Serial.print("Encoder 3: ");
+            // Serial.println(newPosition_3);
         }
 
         if (!(newPosition_1 < abs(scale * p_u1 * 30000 / (2 * PI)) + StError || newPosition_2 < abs(scale * p_u2 * 30000 / (2 * PI)) + StError || newPosition_3 < abs(scale * p_u3 * 30000 / (2 * PI)) + StError))
@@ -235,10 +231,28 @@ void Plot(float x, float y, float w)
     Encoder_2.write(0);
     Encoder_3.write(0);
 
-    Serial.print("Encoder 1: ");
-    Serial.println(newPosition_1);
-    Serial.print("Encoder 2: ");
-    Serial.println(newPosition_2);
-    Serial.print("Encoder 3: ");
-    Serial.println(newPosition_3);
+    // Serial.print("Encoder 1: ");
+    // Serial.println(newPosition_1);
+    // Serial.print("Encoder 2: ");
+    // Serial.println(newPosition_2);
+    // Serial.print("Encoder 3: ");
+    // Serial.println(newPosition_3);
+}
+
+long encoder_output(int select)
+{
+    switch (select)
+    {
+    case 1:
+        return -Encoder_1.read();
+        break;
+    case 2:
+        return -Encoder_2.read();
+        break;
+    case 3:
+        return -Encoder_3.read();
+        break;
+    default:
+        return 0;
+    }
 }
