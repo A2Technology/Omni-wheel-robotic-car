@@ -33,7 +33,7 @@ Control ControlMatrix(float x, float y, float w)
 {
     //x relative coordinate
     //y relative coordinate
-    //angle of rotation
+    //w angle of rotation
     //u1 u2 u3 are speed of 3 wheels 1 2 3
     const float r = 0.175; //radius of wheels in meters
     const float l = 0.053; //distance from center of the car to wheels in meters
@@ -172,7 +172,7 @@ float read_speed(int select)
         break;
     }
 
-    float rot_speed;
+    float rot_speed;           //rotating speed in rad/s
     const int interval = 1000; //choose interval is 1 second (1000 milliseconds)
     currentMillis = millis();
 
@@ -183,6 +183,8 @@ float read_speed(int select)
         previousEncoder = currentEncoder;
         return rot_speed;
     }
+    else
+        return 0;
 }
 
 void position(float x, float y, float w)
@@ -191,11 +193,12 @@ void position(float x, float y, float w)
 
     const int StError = 0;
     const int scale = 1;
-    //motor value
-    float u1,u2,u3;
-    u1=ControlMatrix(x,y,w).u1;
-    u2=ControlMatrix(x,y,w).u2;
-    u3=ControlMatrix(x,y,w).u3;
+
+    //wheel speed value
+    float u1, u2, u3;
+    u1 = ControlMatrix(x, y, w).u1;
+    u2 = ControlMatrix(x, y, w).u2;
+    u3 = ControlMatrix(x, y, w).u3;
 
     //Get sign of rotating velocity of wheels
     int u1_sign, u2_sign, u3_sign;
@@ -220,9 +223,13 @@ void position(float x, float y, float w)
     u2 = (u2 - M_in_min) * (M_out_max - M_out_min) / (M_in_max - M_in_min) + M_out_min;
     u3 = (u3 - M_in_min) * (M_out_max - M_out_min) / (M_in_max - M_in_min) + M_out_min;
 
-    float p_u1 = (175 * w - 1000 * x) / 53;
-    float p_u2 = (175 * w + 500 * x - 500 * sqrt(3) * y) / 53;
-    float p_u3 = (175 * w + 500 * x + 500 * sqrt(3) * y) / 53;
+    //wheel rotation angle values
+    //consider in the same interval of time, the value of rotating angle is equal to
+    //the value of rotating speed, considering the same control matrix
+    float p_u1, p_u2, p_u3;
+    p_u1 = u1;
+    p_u2 = u2;
+    p_u3 = u3;
     do
     {
         newPosition_1 = abs(Encoder_1.read());
