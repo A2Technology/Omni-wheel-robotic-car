@@ -65,9 +65,9 @@ void PID_setup(void)
 
 void control_PID(float u, int select)
 {
-    //Get sign of rotating velocity of wheels
-    int u_sign = sign_of(u);
-    u = abs(u);
+    //control the wheel using PID
+    int u_sign = sign_of(u); //Get sign of rotating velocity of wheels
+    u = abs(u); //get the absolute value of input speed (because we have the variable u_sign)
     switch (select)
     {
     case 1:
