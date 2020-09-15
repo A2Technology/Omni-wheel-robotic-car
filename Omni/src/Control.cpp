@@ -2,16 +2,24 @@
 #include <PID_v1.h>
 #include <Encoder.h>
 #include "Omni.h"
+//Set PID constants
 double kp = 50, ki = 20, kd = 5, input_1 = 0, output_1 = 0, setpoint_1 = 0, input_2 = 0, output_2 = 0, setpoint_2 = 0, input_3 = 0, output_3 = 0, setpoint_3 = 0;
+
+//Declare PID functions
 PID PID_1(&input_1, &output_1, &setpoint_1, kp, ki, kd, DIRECT);
 PID PID_2(&input_2, &output_2, &setpoint_2, kp, ki, kd, DIRECT);
 PID PID_3(&input_3, &output_3, &setpoint_3, kp, ki, kd, DIRECT);
+
+//Declare encoder functions
 Encoder Encoder_1(EN_1A, EN_1B);
 Encoder Encoder_2(EN_2A, EN_2B);
 Encoder Encoder_3(EN_3A, EN_3B);
+
+//Time variables
 long previousMillis = 0;
 long currentMillis = 0;
 
+//Encoder variables
 volatile long currentEncoder;
 volatile long previousEncoder;
 volatile long oldPosition_1 = 0;
@@ -23,6 +31,7 @@ volatile long newPosition_3;
 
 void PID_setup(void)
 {
+    //PID initial settings
     PID_1.SetMode(AUTOMATIC);
     PID_1.SetSampleTime(1);
     PID_1.SetOutputLimits(0, 255);
@@ -160,6 +169,7 @@ float read_speed(int select)
 
 void position(float x, float y, float w)
 {
+    //Control the car to an exact relative position
     const float r = 0.175;
     const float l = 0.053;
     const int StError = 0;
