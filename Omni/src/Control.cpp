@@ -29,6 +29,24 @@ volatile long newPosition_1;
 volatile long newPosition_2;
 volatile long newPosition_3;
 
+Control ControlMatrix(float x, float y, float w)
+{
+    //x relative coordinate
+    //y relative coordinate
+    //angle of rotation
+    //u1 u2 u3 are speed of 3 wheels 1 2 3
+    const float r = 0.175; //radius of wheels in meters
+    const float l = 0.053; //distance from center of the car to wheels in meters
+    float u1, u2, u3;
+    u1 = (l * w - x) / r;
+    u2 = (2 * l * w + x - sqrt(3) * y) / 2 * r;
+    u3 = (2 * l * w + x + sqrt(3) * y) / 2 * r;
+
+    //Return 3 values
+    Control wheel_speed = {u1, u2, u3};
+    return wheel_speed;
+}
+
 void PID_setup(void)
 {
     //PID initial settings
@@ -170,14 +188,14 @@ float read_speed(int select)
 void position(float x, float y, float w)
 {
     //Control the car to an exact relative position
-    const float r = 0.175;
-    const float l = 0.053;
+
     const int StError = 0;
     const int scale = 1;
     //motor value
-    float u1 = (l * w - x) / r;
-    float u2 = (2 * l * w + x - sqrt(3) * y) / 2 * r;
-    float u3 = (2 * l * w + x + sqrt(3) * y) / 2 * r;
+    float u1,u2,u3;
+    u1=ControlMatrix(x,y,w).u1;
+    u2=ControlMatrix(x,y,w).u2;
+    u3=ControlMatrix(x,y,w).u3;
 
     //Get sign of rotating velocity of wheels
     int u1_sign, u2_sign, u3_sign;

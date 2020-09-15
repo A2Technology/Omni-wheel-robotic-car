@@ -21,7 +21,6 @@
 #define EN_3A 20
 #define EN_3B 21
 
-
 void w1(int rotation, int direct);
 void w2(int rotation, int direct);
 void w3(int rotation, int direct);
@@ -32,5 +31,12 @@ void control_ONOFF(float u, int select);
 void control_PID(float u, int select);
 long encoder_output(int select);
 void PID_setup(void);
-
+struct Control
+{
+    //Output speed of 3 wheels
+    float u1;
+    float u2;
+    float u3;
+};
+Control ControlMatrix(float x, float y, float w);
 #endif
