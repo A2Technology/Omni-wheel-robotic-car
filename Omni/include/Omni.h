@@ -20,7 +20,6 @@
 #define EN_2B 19
 #define EN_3A 20
 #define EN_3B 21
- 
 
 
 void w1(int rotation, int direct);
@@ -32,5 +31,6 @@ float read_speed(int select);
 void control_ONOFF(float u, int select);
 void control_PID(float u, int select);
 long encoder_output(int select);
+void PID_setup(void);
 
 #endif

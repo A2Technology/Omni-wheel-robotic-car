@@ -24,6 +24,7 @@ void setup()
 	pinMode(EN_2B, INPUT);
 	pinMode(EN_3A, INPUT);
 	pinMode(EN_3B, INPUT);
+	PID_setup();
 
 	//initial check motor on start up
 	w1(255, 1);
@@ -140,34 +141,36 @@ void loop()
 		control_PID(4 * speedcar, 1);
 		control_PID(4 * speedcar, 2);
 		control_PID(4 * speedcar, 3);
-		delay(200);
+		delay(100);
 		break;
 
 	case 'w': //Rotate left
 		control_PID(4 * speedcar, 1);
 		control_PID(4 * speedcar, 2);
 		control_PID(4 * speedcar, 3);
-		delay(200);
+		delay(100);
 		break;
 
 	case 'U': //Rotate right
 		control_PID(-4 * speedcar, 1);
 		control_PID(-4 * speedcar, 2);
 		control_PID(-4 * speedcar, 3);
-		delay(200);
+		delay(100);
 		break;
 
 	case 'u': //Rotate right
 		control_PID(-4 * speedcar, 1);
 		control_PID(-4 * speedcar, 2);
 		control_PID(-4 * speedcar, 3);
-		delay(200);
+		delay(100);
 		break;
+
 	case 'S': //No motor input
 		w1(0, 1);
 		w2(0, 1);
 		w3(0, 1);
 		break;
+
 	case 'D': //Disconnected
 		w1(0, 1);
 		w2(0, 1);

@@ -21,7 +21,7 @@ volatile long newPosition_1;
 volatile long newPosition_2;
 volatile long newPosition_3;
 
-void control_PID(float u, int select)
+void PID_setup(void)
 {
     PID_1.SetMode(AUTOMATIC);
     PID_1.SetSampleTime(1);
@@ -34,6 +34,10 @@ void control_PID(float u, int select)
     PID_3.SetMode(AUTOMATIC);
     PID_3.SetSampleTime(1);
     PID_3.SetOutputLimits(0, 255);
+}
+
+void control_PID(float u, int select)
+{
     //Get sign of rotating velocity of wheels
     int u_sign = sign_of(u);
     u = abs(u);
@@ -65,8 +69,8 @@ void control_PID(float u, int select)
 void control_ONOFF(float u, int select)
 {
     //control motor speed using ON-OFF control
-    float k = 0.1; //Range of accepted value [u(1-k),u(1+k)]
-    float v = 0;   //velocity read
+    const float k = 0.1; //Range of accepted value [u(1-k),u(1+k)]
+    float v = 0;         //Store velocity read
 
     switch (select) //Select motor
     {
@@ -108,6 +112,19 @@ void control_ONOFF(float u, int select)
             w3(255, sign_of(u));
             break;
         }
+    else if (u == 0) //Stop the motor
+        switch (select)
+        {
+        case 1:
+            w1(0, 1);
+            break;
+        case 2:
+            w2(0, 1);
+            break;
+        case 3:
+            w3(0, 1);
+            break;
+        }
 }
 
 float read_speed(int select)
@@ -127,9 +144,11 @@ float read_speed(int select)
         currentEncoder = -Encoder_3.read();
         break;
     }
+
     float rot_speed;
     const int interval = 1000; //choose interval is 1 second (1000 milliseconds)
     currentMillis = millis();
+
     if (currentMillis - previousMillis > interval)
     {
         previousMillis = currentMillis;
@@ -186,33 +205,24 @@ void position(float x, float y, float w)
             w1(u1, u1_sign);
         else
             w1(0, 0);
-
         if (newPosition_2 < abs(scale * p_u2 * 30000 / (2 * PI)) + StError)
             w2(u2, u2_sign);
         else
             w2(0, 0);
-
         if (newPosition_3 < abs(scale * p_u3 * 30000 / (2 * PI)) + StError)
             w3(u3, u3_sign);
         else
             w3(0, 0);
-
         if (newPosition_1 != oldPosition_1)
-        {
             oldPosition_1 = newPosition_1;
-        }
         //
         //
         if (newPosition_2 != oldPosition_2)
-        {
             oldPosition_2 = newPosition_2;
-        }
         //
         //
         if (newPosition_3 != oldPosition_3)
-        {
-            oldPosition_3 = newPosition_3;
-        }
+            oldPosition_2 = newPosition_2;
 
         if (!(newPosition_1 < abs(scale * p_u1 * 30000 / (2 * PI)) + StError || newPosition_2 < abs(scale * p_u2 * 30000 / (2 * PI)) + StError || newPosition_3 < abs(scale * p_u3 * 30000 / (2 * PI)) + StError))
             break;
@@ -227,6 +237,7 @@ void position(float x, float y, float w)
 
 long encoder_output(int select)
 {
+    //Output encoder value
     switch (select)
     {
     case 1:
