@@ -35,12 +35,12 @@ Control ControlMatrix(float x, float y, float w)
     //y relative coordinate
     //w angle of rotation
     //u1 u2 u3 are speed of 3 wheels 1 2 3
-    const float r = 0.175; //radius of wheels in meters
-    const float l = 0.053; //distance from center of the car to wheels in meters
+    const float r = 0.053; //radius of wheels in meters
+    const float L = 0.175; //distance from center of the car to wheels in meters
     float u1, u2, u3;
-    u1 = (l * w - x) / r;
-    u2 = (2 * l * w + x - sqrt(3) * y) / 2 * r;
-    u3 = (2 * l * w + x + sqrt(3) * y) / 2 * r;
+    u1 = (L * w - x) / r;
+    u2 = (2 * L * w + x - sqrt(3) * y) / (2 * r);
+    u3 = (2 * L * w + x + sqrt(3) * y) / (2 * r);
 
     //Return 3 values
     Control wheel_speed = {u1, u2, u3};
