@@ -61,10 +61,10 @@ void setup()
 
 void loop()
 {
-
+w1(127, 1);
   vel(Encoder_1.read(), Encoder_2.read(), Encoder_3.read());
 
-  w1(127, 1);
+  
 }
 
 void vel(long encoderValue1, long encoderValue2, long encoderValue3)
@@ -83,8 +83,8 @@ void vel(long encoderValue1, long encoderValue2, long encoderValue3)
     //      Serial.print(" pulse / ");
     //      Serial.print(ENCODEROUTPUT);
     //      Serial.print(" pulse per rotation x 60 seconds = ");
-    //      Serial.print(rpm);
-    //      Serial.println(" RPM");
+//    Serial.print(rpm_1);
+//    Serial.println(" RPM");
 
     Encoder_1.write(0);
     Encoder_2.write(0);

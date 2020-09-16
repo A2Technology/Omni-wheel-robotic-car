@@ -14,12 +14,12 @@
 #define PWM1 11
 #define PWM2 12
 #define PWM3 13
-#define EN_1A 2
-#define EN_1B 3
-#define EN_2A 18
-#define EN_2B 19
-#define EN_3A 20
-#define EN_3B 21
+#define EN_1A 3 //change pin order to get positive value of encoder
+#define EN_1B 2
+#define EN_2A 19
+#define EN_2B 18
+#define EN_3A 21
+#define EN_3B 20
 
 void w1(int rotation, int direct);
 void w2(int rotation, int direct);
@@ -31,6 +31,10 @@ void control_ONOFF(float u, int select);
 void control_PID(float u, int select);
 long encoder_output(int select);
 void PID_setup(void);
+void bluetooth_control(void);
+//Return value of PID control input and output
+float PID_output(int select);
+float PID_input(int select);
 struct Control
 {
     //Output speed of 3 wheels
@@ -39,4 +43,5 @@ struct Control
     float u3;
 };
 Control ControlMatrix(float x, float y, float w);
+
 #endif

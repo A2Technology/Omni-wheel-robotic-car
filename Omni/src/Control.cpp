@@ -3,7 +3,10 @@
 #include <Encoder.h>
 #include "Omni.h"
 //Set PID constants
-double kp = 50, ki = 20, kd = 5, input_1 = 0, output_1 = 0, setpoint_1 = 0, input_2 = 0, output_2 = 0, setpoint_2 = 0, input_3 = 0, output_3 = 0, setpoint_3 = 0;
+double kp = 50, ki = 20, kd = 5;
+double input_1 = 0, output_1 = 0, setpoint_1 = 0;
+double input_2 = 0, output_2 = 0, setpoint_2 = 0;
+double input_3 = 0, output_3 = 0, setpoint_3 = 0;
 
 //Declare PID functions
 PID PID_1(&input_1, &output_1, &setpoint_1, kp, ki, kd, DIRECT);
@@ -28,6 +31,12 @@ volatile long oldPosition_3 = 0;
 volatile long newPosition_1;
 volatile long newPosition_2;
 volatile long newPosition_3;
+
+//Bluetooth constant
+char command;
+float speedcar = 0.5;
+
+float v = 0;
 
 Control ControlMatrix(float x, float y, float w)
 {
@@ -63,11 +72,54 @@ void PID_setup(void)
     PID_3.SetOutputLimits(0, 255);
 }
 
+float PID_output(int select)
+{
+    switch (select)
+    {
+    case 1:
+        return output_1;
+        break;
+
+    case 2:
+        return output_2;
+        break;
+
+    case 3:
+        return output_3;
+        break;
+
+    default:
+        return 0;
+        break;
+    }
+}
+float PID_input(int select)
+{
+    switch (select)
+    {
+    case 1:
+        return input_1;
+        break;
+
+    case 2:
+        return input_2;
+        break;
+
+    case 3:
+        return input_3;
+        break;
+
+    default:
+        return 0;
+        break;
+    }
+}
+
 void control_PID(float u, int select)
 {
     //control the wheel using PID
     int u_sign = sign_of(u); //Get sign of rotating velocity of wheels
-    u = abs(u); //get the absolute value of input speed (because we have the variable u_sign)
+    u = abs(u);              //get the absolute value of input speed (because we have the variable u_sign)
     switch (select)
     {
     case 1:
@@ -97,7 +149,7 @@ void control_ONOFF(float u, int select)
 {
     //control motor speed using ON-OFF control
     const float k = 0.1; //Range of accepted value [u(1-k),u(1+k)]
-    float v = 0;         //Store velocity read
+                         //Store velocity read
 
     switch (select) //Select motor
     {
@@ -162,13 +214,13 @@ float read_speed(int select)
     switch (select)
     {
     case 1:
-        currentEncoder = -Encoder_1.read();
+        currentEncoder = Encoder_1.read();
         break;
     case 2:
-        currentEncoder = -Encoder_2.read();
+        currentEncoder = Encoder_2.read();
         break;
     case 3:
-        currentEncoder = -Encoder_3.read();
+        currentEncoder = Encoder_3.read();
         break;
     }
 
@@ -179,12 +231,10 @@ float read_speed(int select)
     if (currentMillis - previousMillis > interval)
     {
         previousMillis = currentMillis;
-        rot_speed = (float)abs(((currentEncoder - previousEncoder) * 2 * PI / Encoder_1_round));
+        rot_speed = (float)((currentEncoder - previousEncoder) * 2 * PI / Encoder_1_round);
         previousEncoder = currentEncoder;
         return rot_speed;
     }
-    else
-        return 0;
 }
 
 void position(float x, float y, float w)
@@ -276,15 +326,164 @@ long encoder_output(int select)
     switch (select)
     {
     case 1:
-        return -Encoder_1.read();
+        return Encoder_1.read();
         break;
     case 2:
-        return -Encoder_2.read();
+        return Encoder_2.read();
         break;
     case 3:
-        return -Encoder_3.read();
+        return Encoder_3.read();
         break;
     default:
         return 0;
+    }
+}
+
+void bluetooth_control(void)
+{
+    //// put your main code here, to run repeatedly:
+    command = Serial.read();
+    Serial.println(command);
+
+    // Serial.println(command);
+    switch (command)
+    {
+    //Adjust speed
+    case '1':
+        speedcar = 0.3;
+        break;
+    case '2':
+        speedcar = 0.35;
+        break;
+    case '3':
+        speedcar = 0.4;
+        break;
+    case '4':
+        speedcar = 0.45;
+        break;
+    case '5':
+        speedcar = 0.5;
+        break;
+    case '6':
+        speedcar = 0.6;
+        break;
+    case '7':
+        speedcar = 0.7;
+        break;
+    case '8':
+        speedcar = 0.8;
+        break;
+    case '9':
+        speedcar = 0.9;
+        break;
+    case '0':
+        speedcar = 0;
+        break;
+    case 'q':
+        speedcar = 1;
+        break;
+
+    //Control motion
+    case 'F': //Forward
+        control_PID(0, 1);
+        control_PID(-4 * speedcar, 2);
+        control_PID(4 * speedcar, 3);
+        break;
+
+    case 'B': //Backward
+        control_PID(0, 1);
+        control_PID(4 * speedcar, 2);
+        control_PID(-4 * speedcar, 3);
+        break;
+
+    case 'R': //Right
+        control_PID(-4 * speedcar, 1);
+        control_PID(2 * speedcar, 2);
+        control_PID(2 * speedcar, 3);
+        break;
+
+    case 'L': //Left
+        control_PID(4 * speedcar, +1);
+        control_PID(-2 * speedcar, 2);
+        control_PID(-2 * speedcar, 3);
+        break;
+
+    case 'G': //Forward left
+        control_PID(2 * speedcar, 1);
+        control_PID(-4 * speedcar, 2);
+        control_PID(1 * speedcar, 3);
+        break;
+
+    case 'I': //Forward right
+        control_PID(-2 * speedcar, 1);
+        control_PID(-4 * speedcar, 2);
+        control_PID(1 * speedcar, 3);
+        break;
+
+    case 'H': //Backward left
+        control_PID(2 * speedcar, 1);
+        control_PID(1 * speedcar, 2);
+        control_PID(-4 * speedcar, 3);
+        break;
+
+    case 'J': //Backward right
+        control_PID(-2 * speedcar, 1);
+        control_PID(4 * speedcar, 2);
+        control_PID(-1 * speedcar, 3);
+        break;
+
+    case 'W': //Rotate left
+        control_PID(4 * speedcar, 1);
+        control_PID(4 * speedcar, 2);
+        control_PID(4 * speedcar, 3);
+        delay(100);
+        break;
+
+    case 'w': //Rotate left
+        control_PID(4 * speedcar, 1);
+        control_PID(4 * speedcar, 2);
+        control_PID(4 * speedcar, 3);
+        delay(100);
+        break;
+
+    case 'U': //Rotate right
+        control_PID(-4 * speedcar, 1);
+        control_PID(-4 * speedcar, 2);
+        control_PID(-4 * speedcar, 3);
+        delay(100);
+        break;
+
+    case 'u': //Rotate right
+        control_PID(-4 * speedcar, 1);
+        control_PID(-4 * speedcar, 2);
+        control_PID(-4 * speedcar, 3);
+        delay(100);
+        break;
+
+    case 'S': //No motor input
+        w1(0, 1);
+        w2(0, 1);
+        w3(0, 1);
+        break;
+
+    case 'D': //Disconnected
+        w1(0, 1);
+        w2(0, 1);
+        w3(0, 1);
+        break;
+
+    case 'X': //Go square
+        position(1, 0, 0);
+        delay(100);
+        position(0, 1, 0);
+        delay(100);
+        position(-1, 0, 0);
+        delay(100);
+        position(0, -1, 0);
+        delay(100);
+        break;
+
+    default:
+        break;
     }
 }
