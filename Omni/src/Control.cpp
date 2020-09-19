@@ -24,7 +24,7 @@ long currentMillis = 0;
 
 //Encoder variables
 volatile long currentEncoder;
-volatile long previousEncoder;
+volatile long previousEncoder=0;
 volatile long oldPosition_1 = 0;
 volatile long oldPosition_2 = 0;
 volatile long oldPosition_3 = 0;
