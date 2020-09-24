@@ -24,7 +24,7 @@ long currentMillis = 0;
 
 //Encoder variables
 volatile long currentEncoder;
-volatile long previousEncoder=0;
+volatile long previousEncoder = 0;
 volatile long oldPosition_1 = 0;
 volatile long oldPosition_2 = 0;
 volatile long oldPosition_3 = 0;
@@ -341,7 +341,6 @@ long encoder_output(int select)
 
 void bluetooth_control(void)
 {
-    //// put your main code here, to run repeatedly:
     command = Serial.read();
     Serial.println(command);
 

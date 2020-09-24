@@ -5,8 +5,8 @@
 
 void w1(int rotation, int direct)
 {
-    //Control rotation of wheel 1
-    //variable "rotation" gets value from 0 (0% power) to 255 (100% power)
+//Control rotation of wheel 1
+//variable "rotation" gets value from 0 (0% power) to 255 (100% power)
     analogWrite(PWM1, rotation);
     if (direct == 1)
     {
@@ -22,8 +22,8 @@ void w1(int rotation, int direct)
 
 void w2(int rotation, int direct)
 {
-    //Control rotation of wheel 2
-    //variable "rotation" gets value from 0 (0% power) to 255 (100% power)
+//Control rotation of wheel 2
+//variable "rotation" gets value from 0 (0% power) to 255 (100% power)
     analogWrite(PWM2, rotation);
     if (direct == 1)
     {
