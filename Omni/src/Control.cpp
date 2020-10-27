@@ -339,7 +339,7 @@ long encoder_output(int select)
     }
 }
 
-void bluetooth_control(void)
+void bluetooth_controlPID(void)
 {
     command = Serial.read();
     Serial.println(command);
@@ -480,6 +480,143 @@ void bluetooth_control(void)
         delay(100);
         position(0, -1, 0);
         delay(100);
+        break;
+
+    default:
+        break;
+    }
+}
+
+void bluetooth_control(void)
+{
+    command = Serial.read();
+    Serial.println(command);
+
+    // Serial.println(command);
+    switch (command)
+    {
+    //Adjust speed
+    case '1':
+        speedcar = 0.3;
+        break;
+    case '2':
+        speedcar = 0.35;
+        break;
+    case '3':
+        speedcar = 0.4;
+        break;
+    case '4':
+        speedcar = 0.45;
+        break;
+    case '5':
+        speedcar = 0.5;
+        break;
+    case '6':
+        speedcar = 0.6;
+        break;
+    case '7':
+        speedcar = 0.7;
+        break;
+    case '8':
+        speedcar = 0.8;
+        break;
+    case '9':
+        speedcar = 0.9;
+        break;
+    case '0':
+        speedcar = 0;
+        break;
+    case 'q':
+        speedcar = 1;
+        break;
+
+    //motor control
+    case 'F': //Forward
+        w1(0, 1);
+        w2(255 * speedcar, -1);
+        w3(255 * speedcar, 1);
+        break;
+
+    case 'B': //Backward
+        w1(0, +1);
+        w2(255 * speedcar, 1);
+        w3(255 * speedcar, -1);
+        break;
+
+    case 'R': //Right
+        w1(255 * speedcar, -1);
+        w2(180 * speedcar, +1);
+        w3(180 * speedcar, +1);
+        break;
+
+    case 'L': //Left
+        w1(255 * speedcar, +1);
+        w2(180 * speedcar, -1);
+        w3(180 * speedcar, -1);
+        break;
+
+    case 'G': //Forward left
+        w1(186 * speedcar, +1);
+        w2(255 * speedcar, -1);
+        w3(68 * speedcar, +1);
+        break;
+
+    case 'I': //Forward right
+        w1(186 * speedcar, -1);
+        w2(255 * speedcar, -1);
+        w3(68 * speedcar, +1);
+        break;
+
+    case 'H': //Backward left
+        w1(186 * speedcar, +1);
+        w2(68 * speedcar, +1);
+        w3(255 * speedcar, -1);
+        break;
+
+    case 'J': //Backward right
+        w1(186 * speedcar, -1);
+        w2(255 * speedcar, +1);
+        w3(68 * speedcar, -1);
+        break;
+
+    case 'S': //No motor input
+        w1(0, +1);
+        w2(0, +1);
+        w3(0, -1);
+        break;
+
+    case 'W': //Rotate left
+        w1(255 * speedcar, +1);
+        w2(255 * speedcar, +1);
+        w3(255 * speedcar, +1);
+        delay(200);
+        break;
+
+    case 'w': //Rotate left
+        w1(255 * speedcar, +1);
+        w2(255 * speedcar, +1);
+        w3(255 * speedcar, +1);
+        delay(200);
+        break;
+
+    case 'U': //Rotate right
+        w1(255 * speedcar, -1);
+        w2(255 * speedcar, -1);
+        w3(255 * speedcar, -1);
+        delay(200);
+        break;
+
+    case 'u': //Rotate right
+        w1(255 * speedcar, -1);
+        w2(255 * speedcar, -1);
+        w3(255 * speedcar, -1);
+        delay(200);
+        break;
+
+    case 'D':
+        w1(0, 1);
+        w2(0, 1);
+        w3(0, 1);
         break;
 
     default:

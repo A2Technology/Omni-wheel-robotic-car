@@ -31,6 +31,7 @@ void control_ONOFF(float u, int select);
 void control_PID(float u, int select);
 long encoder_output(int select);
 void PID_setup(void);
+void bluetooth_controlPID(void);
 void bluetooth_control(void);
 //Return value of PID control input and output
 float PID_output(int select);

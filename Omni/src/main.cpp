@@ -44,120 +44,34 @@ void setup()
 
 void loop()
 {
-	float speedd = 0;
-	w1(255, +1);
-	w2(255, -1);
-	w3(255, -1);
+	// float speedd = 0;
+	// w1(255, +1);
+	// w2(255, -1);
+	// w3(255, -1);
 
-	float v1 = read_speed(1);
-	float v2 = read_speed(2);
-	float v3 = read_speed(3);
-	long p1 = encoder_output(1);
-	long p2 = encoder_output(2);
-	long p3 = encoder_output(3);
+	// float v1 = read_speed(1);
+	// float v2 = read_speed(2);
+	// float v3 = read_speed(3);
+	// long p1 = encoder_output(1);
+	// long p2 = encoder_output(2);
+	// long p3 = encoder_output(3);
 
-	//float input = encoder_output(3); //PID_input(2);
+	// //float input = encoder_output(3); //PID_input(2);
 
-	Serial.print("Pos ");
-	Serial.print(p1);
-	Serial.print("  ");
-	Serial.print(p2);
-	Serial.print("  ");
-	Serial.println(p3);
+	// Serial.print("Pos ");
+	// Serial.print(p1);
+	// Serial.print("  ");
+	// Serial.print(p2);
+	// Serial.print("  ");
+	// Serial.println(p3);
 
-	Serial.print("Vel ");
-	Serial.print(v1);
-	Serial.print("  ");
-	Serial.print(v2);
-	Serial.print("  ");
-	Serial.println(v3);
-	//bluetooth_control();
+	// Serial.print("Vel ");
+	// Serial.print(v1);
+	// Serial.print("  ");
+	// Serial.print(v2);
+	// Serial.print("  ");
+	// Serial.println(v3);
+	bluetooth_control();
 }
 
-// case 'F': //Forward
-// 	w1(0, 1);
-// 	w2(255 * speedcar, -1);
-// 	w3(255 * speedcar, 1);
-// 	break;
 
-// case 'B': //Backward
-// 	w1(0, +1);
-// 	w2(255 * speedcar, 1);
-// 	w3(255 * speedcar, -1);
-// 	break;
-
-// case 'R': //Right
-// 	w1(255 * speedcar, -1);
-// 	w2(180 * speedcar, +1);
-// 	w3(180 * speedcar, +1);
-// 	break;
-
-// case 'L': //Left
-// 	w1(255 * speedcar, +1);
-// 	w2(180 * speedcar, -1);
-// 	w3(180 * speedcar, -1);
-// 	break;
-
-// case 'G': //Forward left
-// 	w1(186 * speedcar, +1);
-// 	w2(255 * speedcar, -1);
-// 	w3(68 * speedcar, +1);
-// 	break;
-
-// case 'I': //Forward right
-// 	w1(186 * speedcar, -1);
-// 	w2(255 * speedcar, -1);
-// 	w3(68 * speedcar, +1);
-// 	break;
-
-// case 'H': //Backward left
-// 	w1(186 * speedcar, +1);
-// 	w2(68 * speedcar, +1);
-// 	w3(255 * speedcar, -1);
-// 	break;
-
-// case 'J': //Backward right
-// 	w1(186 * speedcar, -1);
-// 	w2(255 * speedcar, +1);
-// 	w3(68 * speedcar, -1);
-// 	break;
-
-// case 'S': //No motor input
-// 	w1(0, +1);
-// 	w2(0, +1);
-// 	w3(0, -1);
-// 	break;
-
-// case 'W': //Rotate left
-// 	w1(255 * speedcar, +1);
-// 	w2(255 * speedcar, +1);
-// 	w3(255 * speedcar, +1);
-// 	delay(200);
-// 	break;
-
-// case 'w': //Rotate left
-// 	w1(255 * speedcar, +1);
-// 	w2(255 * speedcar, +1);
-// 	w3(255 * speedcar, +1);
-// 	delay(200);
-// 	break;
-
-// case 'U': //Rotate right
-// 	w1(255 * speedcar, -1);
-// 	w2(255 * speedcar, -1);
-// 	w3(255 * speedcar, -1);
-// 	delay(200);
-// 	break;
-
-// case 'u': //Rotate right
-// 	w1(255 * speedcar, -1);
-// 	w2(255 * speedcar, -1);
-// 	w3(255 * speedcar, -1);
-// 	delay(200);
-// 	break;
-
-// case 'D':
-// 	w1(0, 1);
-// 	w2(0, 1);
-// 	w3(0, 1);
-// 	break;
